@@ -1,0 +1,86 @@
+{% extends 'hello/base.html' %}
+{% block title %}current time{% endblock %}
+{% block content%}
+<p>It is now {{ current_date }}.</p>
+<img src="/static/logo.png"/>
+<!-- 为 ECharts 准备一个具备大小（宽高）的Dom -->
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="main" style="width: 600px;height:400px;"></div>
+{{ args }}
+<script type="text/javascript">
+// 基于准备好的dom，初始化echarts实例
+var myChart = echarts.init(document.getElementById('main'));
+var args = {{ args|safe }}
+var positive = args.positive
+var negative = args.negative
+
+var option = {
+    backgroundColor: '#2c343c',
+    visualMap: {
+        show: false,
+        min: 0,
+        max: 20,
+        inRange: {
+            colorLightness: [0, 1]
+        }
+    },
+    series : [
+        {
+            name: '访问来源',
+            type: 'pie',
+            radius: '55%',
+            data:[
+                {value:positive,
+                name:'正面' + positive,
+                itemStyle: {
+                normal: {
+                color: 'rgb(215, 26, 33)'
+                }
+                }
+           },
+                {value:negative,
+                name:'负面' + negative,
+                itemStyle: {
+                normal: {
+                color: 'rgb(0, 49, 79)'
+                }
+                }
+          },
+                //{value:310, name:'邮件营销'},
+                //{value:335, name:'直接访问'},
+                //{value:400, name:'搜索引擎'}
+            ],
+            roseType: 'angle',
+            /*label: {
+                normal: {
+                    textStyle: {
+                        color: 'rgba(255, 255, 255, 0.3)'
+                    }
+                }
+            },
+            labelLine: {
+                normal: {
+                    lineStyle: {
+                        color: 'rgba(255, 255, 255, 0.3)'
+                    }
+                }
+            },*/
+            itemStyle: {
+                normal: {
+                    //color: '#c23531',
+                    shadowBlur: 200,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }
+    ]
+};
+
+
+// 使用刚指定的配置项和数据显示图表。
+myChart.setOption(option);
+
+</script>
+
+<!--<img src="http://p3.sinaimg.cn/2750469762/180/85031333451108"/>-->
+{% endblock %}
