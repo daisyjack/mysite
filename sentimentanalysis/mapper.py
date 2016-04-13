@@ -56,7 +56,7 @@ logging.info('我是水'.decode('utf-8'))
 
 #postDict = loadDict("sentimentDict/正面情感词语（中文）.txt".decode('utf-8'), 1)
 
-postDict = load_dict(u"/home/ren/programming/mysite/sentimentanalysis/sentimentDict/positive.txt", 1)
+postDict = load_dict(u"/home/ren/programming/mysite/sentimentanalysis/sentimentDict/ntusd-positive.txt", 1)
 
 #print postDict
 # appendDict(postDict, u"sentimentDict/正面评价词语（中文）.txt", 1)
@@ -64,7 +64,7 @@ postDict = load_dict(u"/home/ren/programming/mysite/sentimentanalysis/sentimentD
 # appendDict(postDict, u"sentimentDict/正面评价词语（中文）2.txt", 1)
 #negDict = loadDict(u"sentimentDict/负面情感词语（中文）.txt", -1)
 
-negDict = load_dict(u"/home/ren/programming/mysite/sentimentanalysis/sentimentDict/negative.txt", -1)
+negDict = load_dict(u"/home/ren/programming/mysite/sentimentanalysis/sentimentDict/ntusd-negative.txt", -1)
 
 #print negDict
 #appendDict(negDict, u"sentimentDict/负面评价词语（中文）.txt", -1)
@@ -92,6 +92,7 @@ def analyse_sent(content):
         # wordList = list(seg_list)
         for word, pos in seg_list:
             wordList.append(WordPos(word, pos))
+        print len(wordList),
         lastWordPos = 0
         lastPuncPos = 0
         i = 0
@@ -103,11 +104,11 @@ def analyse_sent(content):
             print word_pos.word + '/' + word_pos.pos,
             if word in punc:
                 lastPuncPos = i
-                print 'punc'
+                #print 'punc'
             # elif word in stop:
             #     print 'stop'
             elif word in postDict and (pos[0] in sentiment_pos):
-                print 'post',
+                #print 'post',
                 if lastWordPos > lastPuncPos:
                     start = lastWordPos
                 else:
@@ -129,14 +130,14 @@ def analyse_sent(content):
                         else:
                             break
                 # print '%s\t%s\t%s' % (key, word, score)
-                print '%s\t%s' % ('pp', score)
+                #print '%s\t%s' % ('pp', score)
                 lastWordPos = i
                 if score > 0:
                     posTotal += score
                 else:
                     negTotal += score
             elif word in negDict and (pos[0] in sentiment_pos):
-                print 'neg',
+                #print 'neg',
                 if lastWordPos > lastPuncPos:
                     start = lastWordPos
                 else:
@@ -158,7 +159,7 @@ def analyse_sent(content):
                         else:
                             break
                 # print '%s\t%s\t%s' % (key, word, score)
-                print '%s\t%s' % ('nn', score)
+                #print '%s\t%s' % ('nn', score)
                 lastWordPos = i
                 if score > 0:
                     posTotal += score
