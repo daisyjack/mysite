@@ -57,15 +57,14 @@ def get_content(html, key_empha):
 
 headers = {"Cookie": "_T_WM=c5b9d937f930cc19d8ece8707cc62fc5; SUB=_2A256COhaDeRxGeRP41YW9y_Ozz2IHXVZ8ogSrDV6PUJbrdANLXCkkW1LHesEl_fj1Iyc9VMQ9_4OTANJhLuuGQ..; gsid_CTandWM=4uHucb1c1gOXARzCFZIuB9amf3T",
            "User-Agent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2587.3 Safari/537.36"}
-url = "http://weibo.cn/search/mblog?hideSearchFrame=&keyword=%E6%B5%81%E6%84%9F&page="
-data = {"keyword": "流感",
-        "smblog": "搜微博"}
+data = {"keyword": "荒野猎人"}
+url = "http://weibo.cn/search/mblog?hideSearchFrame=&{}&page=".format(urllib.urlencode(data))
 httpHandler = urllib2.HTTPHandler(debuglevel=1)
 httpsHandler = urllib2.HTTPSHandler(debuglevel=1)
 opener = urllib2.build_opener(RedirectHandler)
 
 key_empha = re.compile(u'<span\s*class="kt">(\w+)</span>', re.U|re.I)
-fp = open("contents.txt", "a")
+fp = open("contents.txt", "w")
 total = 0
 for page in range(1, 101):
     print page

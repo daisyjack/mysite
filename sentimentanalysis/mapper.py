@@ -50,9 +50,9 @@ def load_extent_dict(fileName):
     return extentDict
 
 
-unicode_str = unicode('中文', encoding='utf-8')
-print unicode_str
-logging.info('我是水'.decode('utf-8'))
+# unicode_str = unicode('中文', encoding='utf-8')
+# print unicode_str
+# logging.info('我是水'.decode('utf-8'))
 
 #postDict = loadDict("sentimentDict/正面情感词语（中文）.txt".decode('utf-8'), 1)
 
@@ -76,98 +76,129 @@ stop = load_dict(u'/home/ren/programming/mysite/sentimentanalysis/sentimentDict/
 exclamation = {"!": 2, "！": 2}
 sentiment_pos = ['n', 'v', 'a', 'i', 'j', 'l', 'o', 'z', 'zg']
 logging.info('load finished')
+if u"甜蜜" in postDict:
+    print u"甜蜜 is in "
 
-def analyse_sent(content):
+sub_2_pos = {('d', 'a'): 0.743169, ('d', 'v'): 0.579251, ('v', 'r'): 0.686717,
+             ('a', 'u'): 0.701449, ('v', 'd'): 0.7, ('v', 'a'): 0.6875,
+             ('v', 'y'): 0.885057, ('a', 'y'): 0.936508, ('r', 'v'): 0.642523,
+             ('n', 'y'): 0.962264}
+
+def sub_or_ob(word_list):
+    pos_list = []
+    a = None
+    b =None
+    total = 0
+    for word in word_list:
+        a = b
+        b = word.pos
+        if a and b:
+            #print a, b
+            pos_list.append((a, b))
+    for pos_pattern in pos_list:
+        if pos_pattern in sub_2_pos:
+            #print pos_pattern
+            total += sub_2_pos[pos_pattern]
+    return total / len(word_list)
+
+def analyse_sent(content, key_word):
     for line in ['e']:
         content = content.strip()
         # record = json.loads(line[1:-1])
         # key = record["weiboId"]
         # content = record["content"]
-        # wordList = seg.cut(content)
-        # wordList.reverse()
+        # word_list = seg.cut(content)
+        # word_list.reverse()
         # content = u'【NASA 发言人：美国当年登月成功耗资 250 亿美元】 -嫦娥三号发射成功，直奔月球而去。此前，全世界仅有美国、' \
         #           u'前苏联成功实施了 13 次无人月球表面软着陆，而中国也即将有望成为第 3 个实现月球软着陆的国家。'
+        jieba.suggest_freq(key_word, tune=True)
         seg_list = pseg.cut(content)
-        wordList = []
-        # wordList = list(seg_list)
+        word_list = []
+        # word_list = list(seg_list)
         for word, pos in seg_list:
-            wordList.append(WordPos(word, pos))
-        print len(wordList),
-        lastWordPos = 0
-        lastPuncPos = 0
-        i = 0
-        posTotal = 0
-        negTotal = 0
-        for word_pos in wordList:
-            word = word_pos.word
-            pos = word_pos.pos
-            print word_pos.word + '/' + word_pos.pos,
-            if word in punc:
-                lastPuncPos = i
-                #print 'punc'
-            # elif word in stop:
-            #     print 'stop'
-            elif word in postDict and (pos[0] in sentiment_pos):
-                #print 'post',
-                if lastWordPos > lastPuncPos:
-                    start = lastWordPos
-                else:
-                    start = lastPuncPos
-                score = 1
-                # print "start: " + str(start)
-                # print "end: " + str(i)
-                for word_pos_before in wordList[start + 1:i]:
-                    word_before = word_pos_before.word
-                    if word_before in extentDict:
-                        score = score * extentDict[word_before]
-                    if word_before in inverseDict:
-                        score = score * -1
-                for word_pos_after in wordList[i + 1:]:
-                    word_after = word_pos_after.word
-                    if word_after in punc:
-                        if word_after in exclamation:
-                            score = score + 2
-                        else:
-                            break
-                # print '%s\t%s\t%s' % (key, word, score)
-                #print '%s\t%s' % ('pp', score)
-                lastWordPos = i
-                if score > 0:
-                    posTotal += score
-                else:
-                    negTotal += score
-            elif word in negDict and (pos[0] in sentiment_pos):
-                #print 'neg',
-                if lastWordPos > lastPuncPos:
-                    start = lastWordPos
-                else:
-                    start = lastPuncPos
-                score = -1
-                # print "start: " + str(start)
-                # print "end: " + str(i)
-                for word_pos_before in wordList[start + 1:i]:
-                    word_before = word_pos_before.word
-                    if word_before in extentDict:
-                        score = score * extentDict[word_before]
-                    if word_before in inverseDict:
-                        score = score * -1
-                for word_pos_after in wordList[i + 1:]:
-                    word_after = word_pos_after.word
-                    if word_after in punc:
-                        if word_after in exclamation:
-                            score = score - 2
-                        else:
-                            break
-                # print '%s\t%s\t%s' % (key, word, score)
-                #print '%s\t%s' % ('nn', score)
-                lastWordPos = i
-                if score > 0:
-                    posTotal += score
-                else:
-                    negTotal += score
-            i = i + 1
-        print ""
-        print '正分数'.decode('utf-8'), posTotal, '负分数'.decode('utf-8'), negTotal
+            word_list.append(WordPos(word, pos[0]))
+        sub_ob_score = sub_or_ob(word_list)
+        print sub_ob_score
+        #print len(word_list),
+        if sub_ob_score >= 0.12:
+            last_word_pos = 0
+            last_punc_pos = 0
+            i = 0
+            pos_total = 0
+            neg_total = 0
+            for word_pos in word_list:
+                word = word_pos.word
+                pos = word_pos.pos
+                print word_pos.word + '/' + word_pos.pos,
+                if word in punc:
+                    last_punc_pos = i
+                    # print 'punc'
+                # elif word in stop:
+                #     print 'stop'
+                elif word in postDict:
+                    print 'post',
+                    if last_word_pos > last_punc_pos:
+                        start = last_word_pos
+                    else:
+                        start = last_punc_pos
+                    score = 1
+                    # print "start: " + str(start)
+                    # print "end: " + str(i)
+                    for word_pos_before in word_list[start + 1:i]:
+                        word_before = word_pos_before.word
+                        if word_before in extentDict:
+                            score = score * extentDict[word_before]
+                        if word_before in inverseDict:
+                            score = score * -1
+                    for word_pos_after in word_list[i + 1:]:
+                        word_after = word_pos_after.word
+                        if word_after in punc:
+                            if word_after in exclamation:
+                                score = score + 2
+                            else:
+                                break
+                    # print '%s\t%s\t%s' % (key, word, score)
+                    print '%s\t%s' % ('p', score)
+                    last_word_pos = i
+                    if score > 0:
+                        pos_total += score
+                    else:
+                        neg_total += score
+                elif word in negDict:
+                    print 'neg',
+                    if last_word_pos > last_punc_pos:
+                        start = last_word_pos
+                    else:
+                        start = last_punc_pos
+                    score = -1
+                    # print "start: " + str(start)
+                    # print "end: " + str(i)
+                    for word_pos_before in word_list[start + 1:i]:
+                        word_before = word_pos_before.word
+                        if word_before in extentDict:
+                            score = score * extentDict[word_before]
+                        if word_before in inverseDict:
+                            score = score * -1
+                    for word_pos_after in word_list[i + 1:]:
+                        word_after = word_pos_after.word
+                        if word_after in punc:
+                            if word_after in exclamation:
+                                score = score - 2
+                            else:
+                                break
+                    # print '%s\t%s\t%s' % (key, word, score)
+                    print '%s\t%s' % ('n', score)
+                    last_word_pos = i
+                    if score > 0:
+                        pos_total += score
+                    else:
+                        neg_total += score
+                i = i + 1
+            print ""
+            print '正分数'.decode('utf-8'), pos_total, '负分数'.decode('utf-8'), neg_total
+            return True
+        else:
+            return False
 
 
 
