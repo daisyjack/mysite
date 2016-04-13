@@ -29,6 +29,7 @@ def req_302(opener, request):
 
 
 def get_content(html, key_empha):
+    content_list = []
     html = re.sub(key_empha, r'\1', html)
     dom = etree.HTML(html)
     for item in dom.iterfind("body/div"):
@@ -36,7 +37,8 @@ def get_content(html, key_empha):
             if len(item) == 1:
                 for subitem in item.iterfind("div/span"):
                     if subitem.get("class") == "ctt":
-                        print etree.tostring(subitem, method='text', encoding='UTF-8')
+                        content = etree.tostring(subitem, method='text', encoding='utf-8').decode("utf-8")
+                        content_list.append(content)
             else:
                 for subitem in item.iterfind("div"):
                     is_target = True
@@ -48,7 +50,9 @@ def get_content(html, key_empha):
                         # raw = "赞[1]赞[1]"
                         pattern = re.compile(u'(赞\[\d*\])', re.U)
                         match = re.search(pattern, raw.decode("utf-8"))
-                        print raw.decode("utf-8")[:match.start()]
+                        content = raw.decode("utf-8")[:match.start()]
+                        content_list.append(content)
+    return content_list
 
 
 headers = {"Cookie": "_T_WM=c5b9d937f930cc19d8ece8707cc62fc5; SUB=_2A256COhaDeRxGeRP41YW9y_Ozz2IHXVZ8ogSrDV6PUJbrdANLXCkkW1LHesEl_fj1Iyc9VMQ9_4OTANJhLuuGQ..; gsid_CTandWM=4uHucb1c1gOXARzCFZIuB9amf3T",
@@ -61,13 +65,20 @@ httpsHandler = urllib2.HTTPSHandler(debuglevel=1)
 opener = urllib2.build_opener(RedirectHandler)
 
 key_empha = re.compile(u'<span\s*class="kt">(\w+)</span>', re.U|re.I)
+fp = open("contents.txt", "a")
+total = 0
 for page in range(1, 101):
     print page
     request = urllib2.Request(url + str(page), headers=headers)
     #response = urllib2.urlopen(request)
     response = req_302(opener, request)
     html = response.read()
-    print get_content(html, key_empha)
+    content_list =  get_content(html, key_empha)
+    for content in content_list:
+        fp.write(content.encode("utf-8") + "\n")
+        total += 1
+fp.close()
+print total
 
 
 html = u"""
@@ -77,7 +88,10 @@ html = u"""
 # for item in soup.html.head.descendants:
 #     print type(item)
 #     print "<----->"
-#html = '<html><body id="1">abc<div>123</div>def<div>456</div>ghi</body></html>'
+# html = '<html><body id="1">abc<div>123</div>def<div>456</div>ghi</body></html>'
+# dom = etree.HTML(html)
+# for item in dom[0].iterfind(""):
+#     print item
 
 
 
