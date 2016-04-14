@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'hello',
     'contact',
     'spider',
+    'sentiment',
 )
 
 MIDDLEWARE_CLASSES = (

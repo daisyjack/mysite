@@ -12,7 +12,8 @@ urlpatterns = patterns('',
     url(r"^time/plus/(\d{1,2})/$", hours_ahead),
     url(r"^search/$", search),
     url(r"^contact/$", contact),
-    url(r"^image/$", unruly_passengers_csv),
+    url(r"^image/$", my_image),
     url(r"^json/$", json_type),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'sentiment/', include('sentiment.urls'))
 )

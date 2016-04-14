@@ -16,7 +16,8 @@ def hello(request):
     return HttpResponse("Hello World!!!")
 
 def current_datetime(request):
-    import spider.sns.sns_spider
+    #import spider.sns.sns_spider
+    import spider.sns.get_content
     now = datetime.datetime.now()
     args = {"positive": 7,
             "negative": 9}
@@ -59,11 +60,11 @@ def search(request):
 
 
 def my_image(request):
-    image_data = open("/home/ren/programming/mysite/static/newlogo.png", "rb").read()
+    image_data = open("../static/logo.png", "rb").read()
     return HttpResponse(image_data, content_type="image/png")
 
 
-UNRULY_PASSENGERS = [146,184,235,200,226,251,299,273,281,304,203]
+UNRULY_PASSENGERS = [146,184,235,200,26,251,299,273,281,304,203]
 
 def unruly_passengers_csv(request):
     import csv

@@ -9,6 +9,8 @@ from bs4 import BeautifulSoup
 #values = {"username":"1016903103@qq.com","password":"XXXX"}
 #data = urllib.urlencode(values)
 import xml.etree.ElementTree as ET
+import os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
 
 class RedirectHandler(urllib2.HTTPRedirectHandler):
@@ -64,9 +66,10 @@ httpsHandler = urllib2.HTTPSHandler(debuglevel=1)
 opener = urllib2.build_opener(RedirectHandler)
 
 key_empha = re.compile(u'<span\s*class="kt">(\w+)</span>', re.U|re.I)
-fp = open("contents.txt", "w")
+#fp = open(os.path.join(BASE_DIR, "media", 'localdata', 'contents.txt'), "w")
+fp = open("contents.txt", 'w')
 total = 0
-for page in range(1, 101):
+for page in range(1, 20):
     print page
     request = urllib2.Request(url + str(page), headers=headers)
     #response = urllib2.urlopen(request)

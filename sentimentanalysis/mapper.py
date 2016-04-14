@@ -4,11 +4,12 @@ import sys
 import jieba
 import logging
 from jieba import posseg as pseg
+# from snownlp import SnowNLP
 import json
 #from smallseg import SEG
 #seg = SEG()
-# reload(sys)
-# sys.setdefaultencoding("utf-8")
+reload(sys)
+sys.setdefaultencoding("utf-8")
 logging.basicConfig(level=logging.INFO)
 
 
@@ -82,7 +83,10 @@ if u"甜蜜" in postDict:
 sub_2_pos = {('d', 'a'): 0.743169, ('d', 'v'): 0.579251, ('v', 'r'): 0.686717,
              ('a', 'u'): 0.701449, ('v', 'd'): 0.7, ('v', 'a'): 0.6875,
              ('v', 'y'): 0.885057, ('a', 'y'): 0.936508, ('r', 'v'): 0.642523,
-             ('n', 'y'): 0.962264}
+             ('n', 'y'): 0.962264, ('r', 'd'): 0.704846, ('r', 'a'): 0.797872,
+             ('d', 'd'): 0.651079, ('u', 'd'): 0.8, ('r', 'u'): 0.657459,
+             ('r', 'r'): 0.846154, ('v', 'q'): 0.795918, ('a', 'd'): 0.809524,
+             ('r', 'n'): 0.599369, ('u', 'v'): 0.60339}
 
 def sub_or_ob(word_list):
     pos_list = []
@@ -97,7 +101,7 @@ def sub_or_ob(word_list):
             pos_list.append((a, b))
     for pos_pattern in pos_list:
         if pos_pattern in sub_2_pos:
-            #print pos_pattern
+            print pos_pattern
             total += sub_2_pos[pos_pattern]
     return total / len(word_list)
 
@@ -111,7 +115,11 @@ def analyse_sent(content, key_word):
         # word_list.reverse()
         # content = u'【NASA 发言人：美国当年登月成功耗资 250 亿美元】 -嫦娥三号发射成功，直奔月球而去。此前，全世界仅有美国、' \
         #           u'前苏联成功实施了 13 次无人月球表面软着陆，而中国也即将有望成为第 3 个实现月球软着陆的国家。'
-        jieba.suggest_freq(key_word, tune=True)
+        #snowNLP
+        #snow = SnowNLP(content)
+        #print "snowNLP" + str(snow.sentiments)
+        if key_word:
+            jieba.suggest_freq(key_word, tune=True)
         seg_list = pseg.cut(content)
         word_list = []
         # word_list = list(seg_list)
@@ -121,6 +129,7 @@ def analyse_sent(content, key_word):
         print sub_ob_score
         #print len(word_list),
         if sub_ob_score >= 0.12:
+            print '是主观句'
             last_word_pos = 0
             last_punc_pos = 0
             i = 0
@@ -196,9 +205,9 @@ def analyse_sent(content, key_word):
                 i = i + 1
             print ""
             print '正分数'.decode('utf-8'), pos_total, '负分数'.decode('utf-8'), neg_total
-            return True
+            return {'sub': True, 'sub_socre': sub_ob_score, 'wordlist': word_list, 'pos': pos_total, 'neg': neg_total}
         else:
-            return False
+            return {'sub': False, 'sub_socre': sub_ob_score, 'wordlist': word_list, 'pos': None, 'neg': None}
 
 
 
