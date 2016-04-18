@@ -2,8 +2,10 @@
 <html lang="en">
 <header>
     <meta charset="utf-8">
+    {% if show_chart %}
     <!-- 引入 ECharts 文件 -->
     <script src="/static/js/echarts.min.js"></script>
+    {% endif %}
     <title>{% block title %}{% endblock %}</title>
 </header>
 <body>

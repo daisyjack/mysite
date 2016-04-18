@@ -4,13 +4,19 @@
 <!--<img src="/static/logo.png"/>-->
 <form action="/sentiment/sentence/" method="post">
     {% csrf_token %}
-        <p>您要分析的内容: <br/><textarea name="message" rows="10" cols="50">{{ message }}</textarea></p>
-        <input type="submit" value="Submit">
-    </form>
+    <p>关键词：<input name='key_word'></p>
+    <p>您要分析的内容: <br/><textarea name="message" rows="5" cols="50"></textarea></p>
+    <input type="submit" value="开始分析">
+</form>
 <br/>
+{% if show_ob%}
+<p>这是个客观内容，因此没有情感成分</p>
+<br/>
+{% endif %}
 <!-- 为 ECharts 准备一个具备大小（宽高）的Dom -->
 <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
 <div id="main" style="width: 600px;height:400px;"></div>
+{% if show_chart %}
 <script type="text/javascript">
 // 基于准备好的dom，初始化echarts实例
 var myChart = echarts.init(document.getElementById('main'));
@@ -91,6 +97,7 @@ var option = {
 myChart.setOption(option);
 
 </script>
+{% endif %}
 
 <!--<img src="http://p3.sinaimg.cn/2750469762/180/85031333451108"/>-->
 {% endblock %}

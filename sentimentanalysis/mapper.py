@@ -4,6 +4,7 @@ import sys
 import jieba
 import logging
 from jieba import posseg as pseg
+from sentimentanalysis.get_xlsx_dict import get_dict
 # from snownlp import SnowNLP
 import json
 #from smallseg import SEG
@@ -11,6 +12,7 @@ import json
 reload(sys)
 sys.setdefaultencoding("utf-8")
 logging.basicConfig(level=logging.INFO)
+jieba.load_userdict(u"/home/ren/programming/mysite/sentimentanalysis/jieba_usr_dict.txt")
 
 
 class WordPos(object):
@@ -57,15 +59,17 @@ def load_extent_dict(fileName):
 
 #postDict = loadDict("sentimentDict/正面情感词语（中文）.txt".decode('utf-8'), 1)
 
-postDict = load_dict(u"/home/ren/programming/mysite/sentimentanalysis/sentimentDict/ntusd-positive.txt", 1)
-
+#postDict = load_dict(u"/home/ren/programming/mysite/sentimentanalysis/sentimentDict/ntusd-positive.txt", 1)
+dict_result = get_dict(u"/home/ren/programming/mysite/sentimentanalysis/dict.xlsx")
+postDict = dict_result.get("pos")
+negDict = dict_result.get("neg")
 #print postDict
 # appendDict(postDict, u"sentimentDict/正面评价词语（中文）.txt", 1)
 # appendDict(postDict, u"sentimentDict/正面评价词语（中文）1.txt", 1)
 # appendDict(postDict, u"sentimentDict/正面评价词语（中文）2.txt", 1)
 #negDict = loadDict(u"sentimentDict/负面情感词语（中文）.txt", -1)
 
-negDict = load_dict(u"/home/ren/programming/mysite/sentimentanalysis/sentimentDict/ntusd-negative.txt", -1)
+#negDict = load_dict(u"/home/ren/programming/mysite/sentimentanalysis/sentimentDict/ntusd-negative.txt", -1)
 
 #print negDict
 #appendDict(negDict, u"sentimentDict/负面评价词语（中文）.txt", -1)
@@ -77,8 +81,8 @@ stop = load_dict(u'/home/ren/programming/mysite/sentimentanalysis/sentimentDict/
 exclamation = {"!": 2, "！": 2}
 sentiment_pos = ['n', 'v', 'a', 'i', 'j', 'l', 'o', 'z', 'zg']
 logging.info('load finished')
-if u"甜蜜" in postDict:
-    print u"甜蜜 is in "
+if u"萌" in postDict:
+    print u"萌 is in "
 
 sub_2_pos = {('d', 'a'): 0.743169, ('d', 'v'): 0.579251, ('v', 'r'): 0.686717,
              ('a', 'u'): 0.701449, ('v', 'd'): 0.7, ('v', 'a'): 0.6875,
@@ -101,7 +105,7 @@ def sub_or_ob(word_list):
             pos_list.append((a, b))
     for pos_pattern in pos_list:
         if pos_pattern in sub_2_pos:
-            print pos_pattern
+            #print pos_pattern
             total += sub_2_pos[pos_pattern]
     return total / len(word_list)
 
@@ -119,16 +123,19 @@ def analyse_sent(content, key_word):
         #snow = SnowNLP(content)
         #print "snowNLP" + str(snow.sentiments)
         if key_word:
-            jieba.suggest_freq(key_word, tune=True)
+            jieba.add_word(key_word, tag='r')
+            print key_word
+            print type(key_word)
         seg_list = pseg.cut(content)
         word_list = []
         # word_list = list(seg_list)
         for word, pos in seg_list:
             word_list.append(WordPos(word, pos[0]))
+            #print word + '/' + pos,
         sub_ob_score = sub_or_ob(word_list)
         print sub_ob_score
         #print len(word_list),
-        if sub_ob_score >= 0.12:
+        if sub_ob_score >= 0.1 or True:
             print '是主观句'
             last_word_pos = 0
             last_punc_pos = 0
@@ -150,13 +157,14 @@ def analyse_sent(content, key_word):
                         start = last_word_pos
                     else:
                         start = last_punc_pos
-                    score = 1
+                    score = postDict.get(word)
                     # print "start: " + str(start)
                     # print "end: " + str(i)
                     for word_pos_before in word_list[start + 1:i]:
                         word_before = word_pos_before.word
                         if word_before in extentDict:
                             score = score * extentDict[word_before]
+                            print 'extent ' + str(extentDict[word_before]),
                         if word_before in inverseDict:
                             score = score * -1
                     for word_pos_after in word_list[i + 1:]:
@@ -167,7 +175,7 @@ def analyse_sent(content, key_word):
                             else:
                                 break
                     # print '%s\t%s\t%s' % (key, word, score)
-                    print '%s\t%s' % ('p', score)
+                    print '%s %s' % ('positive', score)
                     last_word_pos = i
                     if score > 0:
                         pos_total += score
@@ -179,7 +187,7 @@ def analyse_sent(content, key_word):
                         start = last_word_pos
                     else:
                         start = last_punc_pos
-                    score = -1
+                    score = -negDict.get(word)
                     # print "start: " + str(start)
                     # print "end: " + str(i)
                     for word_pos_before in word_list[start + 1:i]:
@@ -196,7 +204,7 @@ def analyse_sent(content, key_word):
                             else:
                                 break
                     # print '%s\t%s\t%s' % (key, word, score)
-                    print '%s\t%s' % ('n', score)
+                    print '%s %s' % ('negative', score)
                     last_word_pos = i
                     if score > 0:
                         pos_total += score
@@ -207,7 +215,7 @@ def analyse_sent(content, key_word):
             print '正分数'.decode('utf-8'), pos_total, '负分数'.decode('utf-8'), neg_total
             return {'sub': True, 'sub_socre': sub_ob_score, 'wordlist': word_list, 'pos': pos_total, 'neg': neg_total}
         else:
-            return {'sub': False, 'sub_socre': sub_ob_score, 'wordlist': word_list, 'pos': None, 'neg': None}
+            return {'sub': False, 'sub_socre': sub_ob_score, 'wordlist': word_list, 'pos': 0, 'neg': 0}
 
 
 
