@@ -58,7 +58,7 @@ def get_content(html, key_empha):
 
 
 
-headers = {"Cookie": "_T_WM=c5b9d937f930cc19d8ece8707cc62fc5; SUB=_2A256COhaDeRxGeRP41YW9y_Ozz2IHXVZ8ogSrDV6PUJbrdANLXCkkW1LHesEl_fj1Iyc9VMQ9_4OTANJhLuuGQ..; gsid_CTandWM=4uHucb1c1gOXARzCFZIuB9amf3T",
+headers = {"Cookie": "_T_WM=c5b9d937f930cc19d8ece8707cc62fc5; gsid_CTandWM=4uHucb1c1gOXARzCFZIuB9amf3T; SUB=_2A256EBzfDeRxGeRP41YW9y_Ozz2IHXVZ-qSXrDV6PUNbvtBeLRmmkW1LHetUGzanyfWSRWEKYqMkR6hpkgCKVw..; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WF2XabD3k3qj8u0UkX9NMgg5JpX5KMt; SUHB=06Z01YGXYazNTP; SSOLoginState=1460956303",
            "User-Agent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2587.3 Safari/537.36"}
 data = {"keyword": "荒野猎人"}
 url = "http://weibo.cn/search/mblog?hideSearchFrame=&{}&page=".format(urllib.urlencode(data))
@@ -67,8 +67,8 @@ httpsHandler = urllib2.HTTPSHandler(debuglevel=1)
 opener = urllib2.build_opener(RedirectHandler)
 
 key_empha = re.compile(u'<span\s*class="kt">(\w+)</span>', re.U|re.I)
-#fp = open(os.path.join(BASE_DIR, "media", 'localdata', 'the_contents.txt'), "w")
-fp = open("the_contents.txt", 'w')
+#fp = open(os.path.join(BASE_DIR, "media", 'localdata', 'contents.txt'), "w")
+fp = open("contents.txt", 'w')
 total = 0
 for page in range(1, 101):
     print page
