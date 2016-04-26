@@ -33,3 +33,8 @@ def sententce(request):
                                                        'show_chart': show_chart,
                                                        'show_ob': show_ob},
                   context_instance=RequestContext(request))
+
+
+def topic(request):
+    contents = range(0, 100)
+    return render(request, 'sentiment/topic.html', {'contents': contents})

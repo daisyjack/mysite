@@ -1,0 +1,21 @@
+{% extends 'sentiment/base.html' %}
+{% block title %}特定主题人工标注与机器分析结果对比{% endblock %}
+{% block content %}
+<table border="1">
+<tr>
+  <td>100</td>
+  <td>200</td>
+  <td>300</td>
+</tr>
+<tr>
+  <td>400</td>
+  <td>500</td>
+  <td>600</td>
+</tr>
+    {% for content in contents %}
+    <tr>
+        <td>{{content}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
