@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.template import RequestContext
 import json
 from sentimentanalysis.mapper import analyse_sent
+from spider.sns import get_content
 
 def sententce(request):
     if request.method == 'POST':
@@ -36,5 +37,18 @@ def sententce(request):
 
 
 def topic(request):
-    contents = range(0, 100)
-    return render(request, 'sentiment/topic.html', {'contents': contents})
+    num = range(0, 100)
+    contents = get_content.contents
+    human = get_content.human
+    robot = get_content.robot
+    correct = get_content.correct
+    results = []
+    for i in range(0, 100):
+        results.append({'num': i+1, 'content': contents[i], 'human': human[i],
+                               'robot': robot[i], 'correct': correct[i]})
+    right = get_content.right
+    args = {"right": right,
+            "wrong": 100 - right}
+    return render(request, 'sentiment/topic.html', {'results': results,
+                                                    'args': json.dumps(args),
+                                                    'show_chart': True})

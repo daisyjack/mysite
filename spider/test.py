@@ -1,0 +1,1 @@
+from spider.sns import get_content

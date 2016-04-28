@@ -1,20 +1,103 @@
 {% extends 'sentiment/base.html' %}
 {% block title %}特定主题人工标注与机器分析结果对比{% endblock %}
 {% block content %}
-<table border="1">
+<div id="main" style="width: 300px;height:200px;"></div>
+<script type="text/javascript">
+// 基于准备好的dom，初始化echarts实例
+var myChart = echarts.init(document.getElementById('main'));
+var args = {{ args|safe }};
+var right = args.right;
+var wrong = args.wrong;
+var max_one;
+if (wrong > right){
+max_one = wrong;
+}else{
+max_one = right
+}
+
+var option = {
+    backgroundColor: '#2c343c',
+    visualMap: {
+        show: false,
+        min: 0,
+        max: max_one + 5,
+        inRange: {
+            colorLightness: [0, 1]
+        }
+    },
+    series : [
+        {
+            name: '访问来源',
+            type: 'pie',
+            radius: '55%',
+            data:[
+                {value:right,
+                name:'正确' + right,
+                itemStyle: {
+                normal: {
+                color: 'rgb(215, 26, 33)'
+                }
+                }
+           },
+                {value:wrong,
+                name:'错误' + wrong,
+                itemStyle: {
+                normal: {
+                color: 'rgb(0, 49, 79)'
+                }
+                }
+          },
+                //{value:310, name:'邮件营销'},
+                //{value:335, name:'直接访问'},
+                //{value:400, name:'搜索引擎'}
+            ],
+            roseType: 'angle',
+            label: {
+                normal: {
+                    textStyle: {
+                        color: 'rgba(255, 255, 255, 0.3)'
+                    }
+                }
+            },
+            labelLine: {
+                normal: {
+                    lineStyle: {
+                        color: 'rgba(255, 255, 255, 0.3)'
+                    }
+                }
+            },
+            itemStyle: {
+                normal: {
+                    //color: '#c23531',
+                    shadowBlur: 200,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }
+    ]
+};
+
+
+// 使用刚指定的配置项和数据显示图表。
+myChart.setOption(option);
+
+</script>
+
+<table WIDTH="100%" align="center" border="1">
 <tr>
-  <td>100</td>
-  <td>200</td>
-  <td>300</td>
+    <td width="5%">序号</td>
+  <td width="80%">微博内容</td>
+  <td width="5%">人工标注</td>
+  <td width="5%">算法分析</td>
+    <td width="5">是否正确</td>
 </tr>
-<tr>
-  <td>400</td>
-  <td>500</td>
-  <td>600</td>
-</tr>
-    {% for content in contents %}
+    {% for result in results %}
     <tr>
-        <td>{{content}}</td>
+        <td>{{ result.num }}</td>
+        <td>{{ result.content }}</td>
+        <td>{{ result.human }}</td>
+        <td>{{ result.robot }}</td>
+        <td>{{ result.correct }}</td>
     </tr>
     {% endfor %}
 </table>
