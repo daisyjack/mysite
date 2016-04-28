@@ -42,13 +42,18 @@ def topic(request):
     human = get_content.human
     robot = get_content.robot
     correct = get_content.correct
+    pos = get_content.pos
+    neg = get_content.neg
+    mid = get_content.mid
     results = []
     for i in range(0, 100):
         results.append({'num': i+1, 'content': contents[i], 'human': human[i],
                                'robot': robot[i], 'correct': correct[i]})
     right = get_content.right
-    args = {"right": right,
+    correct_args = {"right": right,
             "wrong": 100 - right}
+    topic_args = {"pos": pos, "mid": mid, "neg": neg}
     return render(request, 'sentiment/topic.html', {'results': results,
-                                                    'args': json.dumps(args),
+                                                    'correct_args': json.dumps(correct_args),
+                                                    'topic_args': json.dumps(topic_args),
                                                     'show_chart': True})

@@ -10,6 +10,9 @@ contents = []
 num = 1
 sub_num = 0
 robot = []
+pos = 0
+neg = 0
+mid = 0
 for line in fp:
     print num
     print line
@@ -20,10 +23,13 @@ for line in fp:
     score = result.get("neg") + result.get("pos")
     if score > 0:
         score = 1
+        pos += 1
     elif score < 0:
         score = -1
+        neg += 1
     else:
         score = 0
+        mid += 1
     robot.append(score)
     print "<------->"
     num += 1

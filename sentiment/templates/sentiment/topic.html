@@ -1,13 +1,116 @@
 {% extends 'sentiment/base.html' %}
 {% block title %}特定主题人工标注与机器分析结果对比{% endblock %}
 {% block content %}
-<div id="main" style="width: 300px;height:200px;"></div>
+<div id="topic" style="width: 600px;height:400px;"></div>
+<script type="text/javascript">
+   // 基于准备好的dom，初始化echarts实例
+var topicChart = echarts.init(document.getElementById('topic'));
+var topic_args = {{ topic_args|safe }};
+var pos = topic_args.pos;
+var mid = topic_args.mid;
+var neg = topic_args.neg
+
+var option = {
+    backgroundColor: '#2c343c',
+    visualMap: {
+        show: false,
+        min: 0,
+        max: 800,
+        inRange: {
+            colorLightness: [0, 1]
+        }
+    },
+    series : [
+        {
+            name: '访问来源',
+            type: 'pie',
+            radius: '55%',
+            data:[
+                {value:pos,
+                name:'正面情感微博' + pos,
+                itemStyle: {
+                normal: {
+                color: 'rgb(255, 66, 93)'
+                }
+                }
+           },
+                {value:neg,
+                name:'负面情感微博' + neg,
+                itemStyle: {
+                normal: {
+                color: 'rgb(175, 215, 237)'
+                }
+                }
+          },
+          {value:mid,
+                name:'中性情感微博' + mid,
+                itemStyle: {
+                normal: {
+                color: 'rgb(92, 167, 186)'
+                }
+                }
+          },
+                //{value:310, name:'邮件营销'},
+                //{value:335, name:'直接访问'},
+                //{value:400, name:'搜索引擎'}
+            ],
+            roseType: 'angle',
+            label: {
+                normal: {
+                    textStyle: {
+                        color: 'rgba(255, 255, 255, 0.3)'
+                    }
+                }
+            },
+            labelLine: {
+                normal: {
+                    lineStyle: {
+                        color: 'rgba(255, 255, 255, 0.3)'
+                    }
+                }
+            },
+            itemStyle: {
+                normal: {
+                    //color: '#c23531',
+                    shadowBlur: 200,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }
+    ]
+};
+
+
+// 使用刚指定的配置项和数据显示图表。
+topicChart.setOption(option);
+
+</script>
+
+<table WIDTH="100%" align="center" border="1">
+<tr>
+    <td width="5%">序号</td>
+  <td width="80%">微博内容</td>
+  <td width="5%">人工标注</td>
+  <td width="5%">算法分析</td>
+    <td width="5">是否正确</td>
+</tr>
+    {% for result in results %}
+    <tr>
+        <td>{{ result.num }}</td>
+        <td>{{ result.content }}</td>
+        <td>{{ result.human }}</td>
+        <td>{{ result.robot }}</td>
+        <td>{{ result.correct }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<div id="correct" style="width: 300px;height:200px;"></div>
 <script type="text/javascript">
 // 基于准备好的dom，初始化echarts实例
-var myChart = echarts.init(document.getElementById('main'));
-var args = {{ args|safe }};
-var right = args.right;
-var wrong = args.wrong;
+var correctChart = echarts.init(document.getElementById('correct'));
+var correct_args = {{ correct_args|safe }};
+var right = correct_args.right;
+var wrong = correct_args.wrong;
 var max_one;
 if (wrong > right){
 max_one = wrong;
@@ -79,26 +182,7 @@ var option = {
 
 
 // 使用刚指定的配置项和数据显示图表。
-myChart.setOption(option);
+correctChart.setOption(option);
 
 </script>
-
-<table WIDTH="100%" align="center" border="1">
-<tr>
-    <td width="5%">序号</td>
-  <td width="80%">微博内容</td>
-  <td width="5%">人工标注</td>
-  <td width="5%">算法分析</td>
-    <td width="5">是否正确</td>
-</tr>
-    {% for result in results %}
-    <tr>
-        <td>{{ result.num }}</td>
-        <td>{{ result.content }}</td>
-        <td>{{ result.human }}</td>
-        <td>{{ result.robot }}</td>
-        <td>{{ result.correct }}</td>
-    </tr>
-    {% endfor %}
-</table>
 {% endblock %}
