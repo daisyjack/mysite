@@ -58,7 +58,7 @@ def get_content(html, key_empha):
 
 
 
-headers = {"Cookie": "_T_WM=c5b9d937f930cc19d8ece8707cc62fc5; gsid_CTandWM=4uHucb1c1gOXARzCFZIuB9amf3T; SUB=_2A256EBzfDeRxGeRP41YW9y_Ozz2IHXVZ-qSXrDV6PUNbvtBeLRmmkW1LHetUGzanyfWSRWEKYqMkR6hpkgCKVw..; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WF2XabD3k3qj8u0UkX9NMgg5JpX5KMt; SUHB=06Z01YGXYazNTP; SSOLoginState=1460956303",
+headers = {"Cookie": "_T_WM=c5b9d937f930cc19d8ece8707cc62fc5; gsid_CTandWM=4uHucb1c1gOXARzCFZIuB9amf3T; SUB=_2A256KOT1DeRxGeRP41YW9y_Ozz2IHXVZ0oy9rDV6PUJbstBeLVbukW1LHeto4n3osmNGE5FPZh0Ak235NUkJeg..; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WF2XabD3k3qj8u0UkX9NMgg5JpX5o2p5NHD95QEeKnXS0MpeoBp; SUHB=0tKbB5kAVkO6ta; SSOLoginState=1462539429",
            "User-Agent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2587.3 Safari/537.36"}
 data = {"keyword": "荒野猎人"}
 url = "http://weibo.cn/search/mblog?hideSearchFrame=&{}&page=".format(urllib.urlencode(data))
@@ -68,7 +68,7 @@ opener = urllib2.build_opener(RedirectHandler)
 
 key_empha = re.compile(u'<span\s*class="kt">(\w+)</span>', re.U|re.I)
 #fp = open(os.path.join(BASE_DIR, "media", 'localdata', 'contents.txt'), "w")
-fp = open("contents.txt", 'w')
+fp = open("content.txt", 'w')
 total = 0
 for page in range(1, 101):
     print page
@@ -76,7 +76,10 @@ for page in range(1, 101):
     #response = urllib2.urlopen(request)
     response = req_302(opener, request)
     html = response.read()
+    #print html
     content_list =  get_content(html, key_empha)
+    for item in content_list:
+        print item
     for content in content_list:
         fp.write(content.encode("utf-8") + "\n")
         total += 1

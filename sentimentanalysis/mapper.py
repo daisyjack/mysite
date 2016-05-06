@@ -125,7 +125,7 @@ def analyse_sent(content, key_word):
         if key_word:
             jieba.add_word(key_word, tag='r')
             print key_word
-            print type(key_word)
+            #print type(key_word)
         seg_list = pseg.cut(content)
         word_list = []
         # word_list = list(seg_list)
