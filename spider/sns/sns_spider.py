@@ -58,7 +58,7 @@ def get_content(html, key_empha):
 
 
 
-headers = {"Cookie": "_T_WM=c5b9d937f930cc19d8ece8707cc62fc5; gsid_CTandWM=4uHucb1c1gOXARzCFZIuB9amf3T; SUB=_2A256KOT1DeRxGeRP41YW9y_Ozz2IHXVZ0oy9rDV6PUJbstBeLVbukW1LHeto4n3osmNGE5FPZh0Ak235NUkJeg..; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WF2XabD3k3qj8u0UkX9NMgg5JpX5o2p5NHD95QEeKnXS0MpeoBp; SUHB=0tKbB5kAVkO6ta; SSOLoginState=1462539429",
+headers = {"Cookie": "_T_WM=c5b9d937f930cc19d8ece8707cc62fc5; SUHB=0tKbB5kAVkO6ta; SUB=_2A256NGXLDeRxGeRP41YW9y_Ozz2IHXVZ1wuDrDV6PUJbrdAKLWnHkW1LHet0aFxl2np-I74CtG58F0MB5cgB7g..; gsid_CTandWM=4uzJcb1c1QQZEsr8s74YI9amf3T; M_WEIBOCN_PARAMS=from%3Dhome",
            "User-Agent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2587.3 Safari/537.36"}
 data = {"keyword": "荒野猎人"}
 url = "http://weibo.cn/search/mblog?hideSearchFrame=&{}&page=".format(urllib.urlencode(data))
