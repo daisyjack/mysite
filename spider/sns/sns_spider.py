@@ -57,10 +57,13 @@ def get_content(html, key_empha):
     return content_list
 
 
+print 'please input the keyword to crwal:'
+keyword = raw_input()
+
 
 headers = {"Cookie": "_T_WM=c5b9d937f930cc19d8ece8707cc62fc5; SUHB=0tKbB5kAVkO6ta; SUB=_2A256NGXLDeRxGeRP41YW9y_Ozz2IHXVZ1wuDrDV6PUJbrdAKLWnHkW1LHet0aFxl2np-I74CtG58F0MB5cgB7g..; gsid_CTandWM=4uzJcb1c1QQZEsr8s74YI9amf3T; M_WEIBOCN_PARAMS=from%3Dhome",
            "User-Agent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2587.3 Safari/537.36"}
-data = {"keyword": "荒野猎人"}
+data = {"keyword": keyword}
 url = "http://weibo.cn/search/mblog?hideSearchFrame=&{}&page=".format(urllib.urlencode(data))
 httpHandler = urllib2.HTTPHandler(debuglevel=1)
 httpsHandler = urllib2.HTTPSHandler(debuglevel=1)
