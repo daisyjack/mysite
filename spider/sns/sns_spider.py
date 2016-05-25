@@ -80,7 +80,7 @@ for page in range(1, 101):
     response = req_302(opener, request)
     html = response.read()
     #print html
-    content_list =  get_content(html, key_empha)
+    content_list = get_content(html, key_empha)
     for item in content_list:
         print item
     for content in content_list:

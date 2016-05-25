@@ -78,7 +78,7 @@ extentDict = load_extent_dict(u"/home/ren/programming/mysite/sentimentanalysis/s
 inverseDict = load_dict(u"/home/ren/programming/mysite/sentimentanalysis/sentimentDict/否定词语.txt", -1)
 punc = load_dict(u"/home/ren/programming/mysite/sentimentanalysis/sentimentDict/标点符号.txt", 1)
 stop = load_dict(u'/home/ren/programming/mysite/sentimentanalysis/sentimentDict/stopword.txt', 1)
-exclamation = {"!": 2, "！": 2}
+exclamation = {"!": 2, u"！": 2}
 sentiment_pos = ['n', 'v', 'a', 'i', 'j', 'l', 'o', 'z', 'zg']
 logging.info('load finished')
 if u"萌" in postDict:
